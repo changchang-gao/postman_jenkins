@@ -1,0 +1,569 @@
+{
+	"info": {
+		"_postman_id": "13f0d165-af70-41a8-b752-4deebb21b635",
+		"name": "外卖系统",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "0.商铺用户登录",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(responseBody);\r",
+							"var result = JSON.parse(responseBody);\r",
+							"// console.log(result.data.token)\r",
+							"pm.globals.set(\"token\", result.data.token );"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "file",
+					"file": {}
+				},
+				"url": {
+					"raw": "{{HOST}}/account/sLogin?username=th0486&password=07bff81f208477d6ffa32d2298e3a11e",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"account",
+						"sLogin"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "th0486"
+						},
+						{
+							"key": "password",
+							"value": "07bff81f208477d6ffa32d2298e3a11e"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1. 查看商铺列表",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"返回的状态码是 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"响应中包含成功\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"成功\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "sidebarStatus=1; Admin-Token={{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{HOST}}/shopping/myShop?page=1&limit=20",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"shopping",
+						"myShop"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "20"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. 新增商铺",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "sidebarStatus=1; Admin-Token={{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "_id",
+							"value": "00001",
+							"type": "text"
+						},
+						{
+							"key": "activities",
+							"value": "煎饼{{$randomInt}}",
+							"type": "text"
+						},
+						{
+							"key": "location",
+							"value": "北京市海淀区",
+							"type": "text"
+						},
+						{
+							"key": "opening_hours",
+							"value": "3年",
+							"type": "text"
+						},
+						{
+							"key": "phone",
+							"value": "18800000000",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "煎饼店{{$randomInt}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}/shopping/addShop",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"shopping",
+						"addShop"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "f1.增加食品",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//手动的获得时间戳\r",
+							"var times = Date.now();\r",
+							"//设置为全局变量\r",
+							"pm.globals.set(\"times\",times);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Cookie",
+						"value": "sidebarStatus=0; Admin-Token={{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{HOST}}/shopping/addmyfood?name=馒头{{$timestamp}}&descript=馒头好吃{{times}}&idShop=8618&category_id=58233&image_path&activity=吃馒头&attributesJson=[\"新\"]&specsJson=[{\"specs\":\"默认\",\"packing_fee\":1,\"price\":10}]",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"shopping",
+						"addmyfood"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "馒头{{$timestamp}}",
+							"description": "必填"
+						},
+						{
+							"key": "descript",
+							"value": "馒头好吃{{times}}"
+						},
+						{
+							"key": "idShop",
+							"value": "8618"
+						},
+						{
+							"key": "category_id",
+							"value": "58233"
+						},
+						{
+							"key": "image_path",
+							"value": null
+						},
+						{
+							"key": "activity",
+							"value": "吃馒头"
+						},
+						{
+							"key": "attributesJson",
+							"value": "[\"新\"]",
+							"description": "必填"
+						},
+						{
+							"key": "specsJson",
+							"value": "[{\"specs\":\"默认\",\"packing_fee\":1,\"price\":10}]"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "f2.查看我的食品列表",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var result = JSON.parse(responseBody);\r",
+							"// console.log(result.data.records[0].item_id)\r",
+							"pm.globals.set(\"food_id\", result.data.records[0].item_id );\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"馒头好吃\"+ globals.times);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "sidebarStatus=1; Admin-Token={{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{HOST}}/shopping/v2/myFoods?page=1&limit=20",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"shopping",
+						"v2",
+						"myFoods"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "20"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "f3.修改食品",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "sidebarStatus=1; Admin-Token={{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{HOST}}/shopping/v2/updatemyfood?name=辣条{{$timestamp}}&id={{food_id}}&descript=辣条好吃&idMenu=58233&idShop=8618&imagePath=&specsJson=[{\"specs\":\"默认\",\"packing_fee\":1,\"price\":10}]",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"shopping",
+						"v2",
+						"updatemyfood"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "辣条{{$timestamp}}"
+						},
+						{
+							"key": "id",
+							"value": "{{food_id}}"
+						},
+						{
+							"key": "descript",
+							"value": "辣条好吃"
+						},
+						{
+							"key": "idMenu",
+							"value": "58233"
+						},
+						{
+							"key": "idShop",
+							"value": "8618"
+						},
+						{
+							"key": "imagePath",
+							"value": ""
+						},
+						{
+							"key": "specsJson",
+							"value": "[{\"specs\":\"默认\",\"packing_fee\":1,\"price\":10}]"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "f4.删除食品",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "sidebarStatus=1; Admin-Token={{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{HOST}}/shopping/v2/fooddel/{{food_id}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"shopping",
+						"v2",
+						"fooddel",
+						"{{food_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "商店图片-文件上传",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "sidebarStatus=1; Admin-Token={{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "file",
+					"file": {}
+				},
+				"url": {
+					"raw": "{{HOST}}/file",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"file"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "修改商铺",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "sidebarStatus=1; Admin-Token={{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{HOST}}/shopping/updatemyshop?name=星巴克新建店&address=上海市静安区秣陵路303号&description=满30减5，满60减8&id=8618&phone=13176876632&rating=6&recent_order_num=100&category=快餐便当/简餐&image_path=clipboard.png&image=/file/getImgStream?fileName=clipboard.png",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"shopping",
+						"updatemyshop"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "星巴克新建店"
+						},
+						{
+							"key": "address",
+							"value": "上海市静安区秣陵路303号"
+						},
+						{
+							"key": "description",
+							"value": "满30减5，满60减8"
+						},
+						{
+							"key": "id",
+							"value": "8618"
+						},
+						{
+							"key": "phone",
+							"value": "13176876632"
+						},
+						{
+							"key": "rating",
+							"value": "6"
+						},
+						{
+							"key": "recent_order_num",
+							"value": "100"
+						},
+						{
+							"key": "category",
+							"value": "快餐便当/简餐"
+						},
+						{
+							"key": "image_path",
+							"value": "clipboard.png"
+						},
+						{
+							"key": "image",
+							"value": "/file/getImgStream?fileName=clipboard.png"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"状态码是200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});"
+				]
+			}
+		}
+	]
+}
